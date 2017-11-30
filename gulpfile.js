@@ -95,3 +95,20 @@ gulp.task('lint-es6', function() {
         .pipe(eslint.format())
         .pipe(eslint.failOnError());
 });
+
+gulp.task('build-data-access-libs', function() {
+    browserify({
+        entries: 'js/export-data-access-libs.js',
+        extensions: ['.js', '.es6'],
+        debug: false,
+	standalone: 'dalliance',
+        nobuiltins: true
+    })
+        .transform("babelify", {presets: ["es2015"],
+                                extensions: [".js", ".es6"]})
+        .bundle()
+        .pipe(source('dalliance-data-access.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('build/'));
+});
